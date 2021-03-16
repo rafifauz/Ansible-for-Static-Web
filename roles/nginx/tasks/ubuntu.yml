@@ -1,0 +1,27 @@
+---
+
+
+- name: install nginx
+  apt:
+   name="nginx"
+   state=present 
+   update_cache=true
+
+- name: Config service nginx
+  template: src=default dest=/etc/nginx/sites-enabled/default
+
+- name: Empty html Folder
+  shell:
+    rm -f /var/www/html/*.html
+
+- name: Add File
+  shell:
+    git clone https://github.com/rafifauz/StaticWeb-Jenkins.git && mv ./StaticWeb-Jenkins/landing-page/* /var/www/html/
+
+- name: Delete git file
+  file:
+    path: StaticWeb-Jenkins
+    state: absent
+
+- name: restart nginx
+  shell: systemctl restart nginx
